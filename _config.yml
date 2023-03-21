@@ -23,8 +23,8 @@ linkedin_username:  thompsonja
 
 # Build settings
 markdown: kramdown
-theme: minima
-  #remote_theme: pages-themes/midnight@v0.2.0
+  #theme: minima
+remote_theme: "mmistakes/minimal-mistakes@4.24.0"
 plugins:
   - jekyll-paginate
   - jekyll-sitemap
@@ -33,6 +33,9 @@ plugins:
   - jekyll-include-cache
   - jekyll-remote-theme
   - jemoji
+
+include:
+  - _pages
 
 # Exclude from processing.
 # The following items will not be processed, by default. Create a custom list
@@ -46,7 +49,58 @@ plugins:
 #   - vendor/gems/
 #   - vendor/ruby/
 
+author:
+  name: "Joshua Thompson"
+  avatar: "/assets/images/avatar.jpeg"
+  bio: "Full stack developer with a passion for making things work better"
+  location: Washington, D.C.
+  links:
+    - label: "Linked In"
+      icon: "fab fa-fw fa-linkedin"
+      url: "https://www.linkedin.com/in/thompsonja"
+    - label: "GitHub"
+      icon: "fab fa-fw fa-github"
+      url: "https://github.com/thompsonja"
+
 minima:
   social_links:
     - { platform: github,   user_url: "https://github.com/thompsonja" }
     - { platform: linkedin, user_url: "https://www.linkedin.com/in/thompsonja" }
+
+minimal_mistakes_skin: "dark"
+social:
+  links:
+    - "https://github.com/thompsonja"
+    - "https://www.linkedin.com/in/thompsonja"
+
+defaults:
+  - scope:
+      path: ""
+      type: posts
+    values:
+      layout: single
+      author_profile: true
+      read_time: true
+      related: true
+  - scope:
+      path: "_pages"
+      type: pages
+    values:
+      layout: single
+      author_profile: true
+
+footer:
+  links:
+    - label: "Linked In"
+      icon: "fab fa-fw fa-linkedin"
+      url: "https://www.linkedin.com/in/thompsonja"
+    - label: "GitHub"
+      icon: "fab fa-fw fa-github"
+      url: "https://github.com/thompsonja"
+
+category_archive:
+  type: liquid
+  path: /categories/
+tag_archive:
+  type: liquid
+  path: /tags/

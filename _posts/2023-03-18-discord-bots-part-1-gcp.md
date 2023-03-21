@@ -1,10 +1,16 @@
 ---
-layout: post
-title:  "Discord Bot Pipeline Part 1 - GCP Setup"
-date:   2023-03-18 12:05:35 +0000
-categories: [infrastructure, cicd, gcp, terraform]
+title: "Discord Bot Pipeline Part 1 - GCP Setup"
+date: 2023-03-18 12:05:35 +0000
+categories:
+  - discord
+tags:
+  - infrastructure
+  - cicd
+  - gcp
+  - terraform
 permalink: discordbots/part1-gcp
 ---
+
 Creating an organization in GCP is a great way to organize your projects. For
 just a single discord bot application, this is likely overkill, but this will
 greatly simplify your ability to iterate on other projects. I am using Cloud
@@ -12,13 +18,13 @@ Identity, primarily because it's the cheapest option and I am not currently
 running a Google Workspace.
 
 Cloud Identity needs to be tied to a domain, which I have created for this blog,
-thompsonja.com. I happen to also use [Google Domains](
-  https://domains.google.com/)
+thompsonja.com. I happen to also use [Google Domains](https://domains.google.com/)
 for domain management, although any registrar will do.
 
 I'm using the following resources from GCP:
-* https://cloud.google.com/resource-manager/docs/creating-managing-organization
-* https://cloud.google.com/identity/docs/set-up-cloud-identity-admin
+
+- https://cloud.google.com/resource-manager/docs/creating-managing-organization
+- https://cloud.google.com/identity/docs/set-up-cloud-identity-admin
 
 Once you finish creating the Identity, navigating to the cloud console should
 result in an organization being created for you automatically when you navigate
@@ -36,12 +42,14 @@ instructions here if you haven't already:
 https://cloud.google.com/sdk/docs/install
 
 Once you have it installed, run the following command in a terminal:
+
 ```
 gcloud auth login
 ```
 
 And login with your newly created email you created during the Cloud Identity
 creation process. Once completed, you can verify success with:
+
 ```
 gcloud auth list
 ```

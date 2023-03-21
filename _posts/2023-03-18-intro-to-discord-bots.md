@@ -1,10 +1,15 @@
 ---
-layout: post
-title:  "Discord Bot Pipeline"
-date:   2023-03-18 12:04:35 +0000
-categories: discord infrastructure cicd
+title: "Discord Bot Pipeline"
+date: 2023-03-18 12:04:35 +0000
+categories:
+  - discord
+tags:
+  - discord
+  - infrastructure
+  - cicd
 permalink: /discordbots/
 ---
+
 A few years back Discord [announced support for slash commands](https://discord.com/blog/slash-commands-are-here).
 For a while I had been running private discord bots for my friends' servers
 using the standard pattern of listening to all messages and reacting on any that
@@ -34,22 +39,23 @@ free to jump around as your interest dictates.
 As a summary, I am using the following technologies and libraries, although you
 can mix and match depending on your own preferences.
 
-* Bot development - Golang using the [discordgo](https://github.com/bwmarrin/discordgo)
+- Bot development - Golang using the [discordgo](https://github.com/bwmarrin/discordgo)
   library.
-    * Any other language can be chosen here, libraries exist for a plethora of
-      languages.
-* Infrastructure as Code - [Terraform](https://terraform.io/)
-    * For simple self-hosted projects, this is unnecessary, but if you want to
-      simplify the process for hosting on a cloud provider, this may be useful.
-* Cloud Computing - [GCP](https://cloud.google.com/)
-    * AWS or Azure can easily be used here instead
-* Continuous Integration / Continuous Deployment (CICD) - [GitHub Actions](https://github.com/features/actions).
-    * Since the repos are already hosted on GitHub this is a natural fit.
+  - Any other language can be chosen here, libraries exist for a plethora of
+    languages.
+- Infrastructure as Code - [Terraform](https://terraform.io/)
+  - For simple self-hosted projects, this is unnecessary, but if you want to
+    simplify the process for hosting on a cloud provider, this may be useful.
+- Cloud Computing - [GCP](https://cloud.google.com/)
+  - AWS or Azure can easily be used here instead
+- Continuous Integration / Continuous Deployment (CICD) - [GitHub Actions](https://github.com/features/actions).
+  - Since the repos are already hosted on GitHub this is a natural fit.
 
 Below are quick links to all of the posts in this series:
-* [Part 1](part1-gcp) - Setting up your GCP organization and project
-* [Part 2](part2-terraform) - Terraform Setup
-* [Part 3](part3-github-actions) - GitHub Actions
-* [Part 4](part4-discordgo) - Intro to discordgo
-* [Part 5](part5-bot-creation) - Building a simple bot
-* [Part 6](part6-bot-deploy) - Deploying the bot
+
+- [Part 1](part1-gcp) - Setting up your GCP organization and project
+- [Part 2](part2-terraform) - Terraform Setup
+- [Part 3](part3-github-actions) - GitHub Actions
+- [Part 4](part4-discordgo) - Intro to discordgo
+- [Part 5](part5-bot-creation) - Building a simple bot
+- [Part 6](part6-bot-deploy) - Deploying the bot
