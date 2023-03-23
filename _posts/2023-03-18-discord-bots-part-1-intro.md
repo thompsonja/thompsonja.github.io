@@ -1,5 +1,6 @@
 ---
-title: "Discord Bot Pipeline"
+title: "Discord Bot Pipeline - Intro"
+excerpt: "Introduction to a new series on Discord Bot pipelines on GCP"
 date: 2023-03-18 12:04:35 +0000
 categories:
   - discord
@@ -8,7 +9,10 @@ tags:
   - infrastructure
   - cicd
 permalink: /discordbots/
+series: discordbots
 ---
+
+{% include series.html %}
 
 A few years back Discord [announced support for slash commands](https://discord.com/blog/slash-commands-are-here).
 For a while I had been running private discord bots for my friends' servers

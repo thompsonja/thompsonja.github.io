@@ -1,5 +1,7 @@
 ---
-title: "Discord Bot Pipeline Part 1 - GCP Setup"
+title: "Discord Bot Pipeline - GCP Setup"
+excerpt: "We go over the steps involved for setting up a GCP organization that
+will host GCP projects for Terraform management and the Discord bots themselves."
 date: 2023-03-18 12:05:35 +0000
 categories:
   - discord
@@ -8,8 +10,13 @@ tags:
   - cicd
   - gcp
   - terraform
-permalink: discordbots/part1-gcp
+collections:
+  - discordbot
+permalink: discordbots/part2-gcp
+series: discordbots
 ---
+
+{% include series.html %}
 
 Creating an organization in GCP is a great way to organize your projects. For
 just a single discord bot application, this is likely overkill, but this will

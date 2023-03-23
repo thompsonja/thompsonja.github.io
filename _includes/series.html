@@ -1,0 +1,32 @@
+{% if page.series %}
+    {% assign seriesCount = '0' %}
+    {% assign pageInSeries = '0' %}
+
+    {% for p in site.posts reversed %}
+        {% if p.series == page.series %}
+            {% capture seriesCount %}{{ seriesCount | plus: '1' }}{% endcapture %}
+            {% if p.url == page.url %}
+                {% capture pageInSeries %}{{ seriesCount }}{% endcapture %}
+            {% endif %}
+        {% endif %}
+    {% endfor %}
+{% endif %}
+
+<blockquote class="series-panel">
+    <span>This post is part {{pageInSeries}} of a {{seriesCount}} part series:</span>
+    <ul>
+        {% assign i = '0' %}
+        {% for p in site.posts reversed %}
+            {% if p.series == page.series %}
+                {% capture i %}{{ i | plus: '1' }}{% endcapture %}
+                <li>Part {{ i }}
+                    {% if p.url == page.url %}
+                        - {{ p.title }} (This Post)
+                    {% else %}
+                        - <a href="{{p.url}}">{{p.title}}</a>
+                    {% endif %}
+                </li>
+            {% endif %}
+        {% endfor %}
+    </ul>
+</blockquote>
