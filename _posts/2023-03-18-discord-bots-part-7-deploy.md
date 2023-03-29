@@ -11,6 +11,7 @@ tags:
   - terraform
 permalink: discordbots/part7-bot-deploy
 series: discordbots
+published: false
 ---
 
 {% include series.html %}

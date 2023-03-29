@@ -50,20 +50,20 @@ https://cloud.google.com/sdk/docs/install
 
 Once you have it installed, run the following command in a terminal:
 
-```
+```bash
 gcloud auth login
 ```
 
 And login with your newly created email you created during the Cloud Identity
 creation process. Once completed, you can verify success with:
 
-```
+```bash
 gcloud auth list
 ```
 
 Run the following:
 
-```
+```bash
 # Install jq for parsing json data from commands if you don't have it already
 sudo apt-get -y install jq
 
@@ -91,7 +91,7 @@ admin rights over any generated project.
 The first thing we need to do is create the Terraform GCP project and link it to
 our billing account:
 
-```
+```bash
 gcloud projects create ${TF_ADMIN} \
   --organization ${GCP_ORGANIZATION_ID} \
   --set-as-default
@@ -102,7 +102,7 @@ gcloud beta billing projects link ${TF_ADMIN} \
 
 Then we can create the service account and download the key:
 
-```
+```bash
 gcloud iam service-accounts create terraform \
   --display-name "Terraform admin account"
 
@@ -116,7 +116,7 @@ important as we will be using GCP Cloud Storage to store the Terraform state in
 a storage bucket and will need permissions to create projects and assign billing
 on newly created projects. Run the following:
 
-```
+```bash
 gcloud projects add-iam-policy-binding ${TF_ADMIN} \
   --member serviceAccount:terraform@${TF_ADMIN}.iam.gserviceaccount.com \
   --role roles/viewer
@@ -139,16 +139,16 @@ state. Buckets also need to be globally unique, so it's a safe bet to use the
 GCP project name as the bucket name. We also set versioning on so that we can
 revert Terraform state back if we need to:
 
-```
+```bash
 gsutil mb -p ${TF_ADMIN} gs://${TF_ADMIN}
 gsutil versioning set on gs://${TF_ADMIN}
-```
+~~~ bash
 
 Finally, we enable some GCP services that we may need in later projects. This
 is because we cannot use the service account to enable a service in another
 project if that service is not also enabled in the admin project:
 
-```
+~~~ bash
 gcloud services enable appengine.googleapis.com
 gcloud services enable artifactregistry.googleapis.com
 gcloud services enable cloudbuild.googleapis.com
@@ -159,5 +159,5 @@ gcloud services enable firestore.googleapis.com
 gcloud services enable iam.googleapis.com
 ```
 
-Once this is complete we can move on to the next phase,
-[Terraform setup](part2-terraform)!
+Now that we've completed GCP setup, we can leverage GitHub actions to provision
+new GCP projects and run Terraform commands!

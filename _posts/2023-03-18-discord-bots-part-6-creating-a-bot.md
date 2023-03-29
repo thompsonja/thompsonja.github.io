@@ -11,6 +11,7 @@ tags:
   - terraform
 permalink: discordbots/part6-bot-creation
 series: discordbots
+published: false
 ---
 
 {% include series.html %}

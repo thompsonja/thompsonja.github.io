@@ -10,6 +10,7 @@ tags:
   - golang
 permalink: discordbots/part5-discordgo
 series: discordbots
+published: false
 ---
 
 {% include series.html %}
