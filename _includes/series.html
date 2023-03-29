@@ -1,6 +1,7 @@
 {% if page.series %}
     {% assign seriesCount = '0' %}
     {% assign pageInSeries = '0' %}
+    {% assign seriesFinished = '0' %}
 
     {% for p in site.posts reversed %}
         {% if p.series == page.series %}
@@ -8,12 +9,19 @@
             {% if p.url == page.url %}
                 {% capture pageInSeries %}{{ seriesCount }}{% endcapture %}
             {% endif %}
+            {% if p.series_finished %}
+                {% capture seriesFinished %}1{% endcapture %}
+            {% endif %}
         {% endif %}
     {% endfor %}
 {% endif %}
 
 <blockquote class="series-panel">
-    <span>This post is part {{pageInSeries}} of a {{seriesCount}} part series:</span>
+    {% if seriesFinished == '1' %}
+        <span>This post is part {{pageInSeries}} of a {{seriesCount}} part series:</span>
+    {% else %}
+        <span>This post is part {{pageInSeries}} of an ongoing series:</span>
+    {% endif %}
     <ul>
         {% assign i = '0' %}
         {% for p in site.posts reversed %}
@@ -28,5 +36,8 @@
                 </li>
             {% endif %}
         {% endfor %}
+        {% if seriesFinished == '0' %}
+        <li>More to come...</li>
+        {% endif %}
     </ul>
 </blockquote>
