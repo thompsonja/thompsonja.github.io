@@ -12,6 +12,7 @@ tags:
   - terraform
 permalink: discordbots/part4-terraform
 series: discordbots
+published: false
 ---
 
 {% include series.html %}

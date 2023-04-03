@@ -19,9 +19,9 @@ series: discordbots
 Previously in this series, we set up our GCP organization and created an admin
 project that will carry out Terraform actions. Now let's set up a GitHub project
 to integrate with this GCP project. The goal here is to use GitHub workflows in
-order to manage your Terraform projects. The details of Terraform are beyond the
-scope of this series, but the next section will provide a brief overview of
-Terraform.
+order to manage your projects with Terraform. The details of Terraform are
+beyond the scope of this series, but the next section will provide a brief
+overview.
 
 ## Terraform Basics
 
@@ -47,13 +47,19 @@ file in addition to updating your cloud infrastructure.
 ## GitHub Setup
 
 First, create a new GitHub project by navigating to https://github.com/new.
-Create a project like `terraform-admin-repo` and clone it locally to your
-machine.
+Create a project like `terraform-controller` and clone it locally to your
+machine. Note: I created these images with a different repository name.
 
-From the repository's settings tab, go to Secrets and variables -> Actions. We
-are going to create three repository secrets that will be used by the workflows
-to interact with Terraform and our GCP project. Click `New Repository secret`
-and add the following:
+![Create a Repository](/assets/images/discordbots/github_setup/1%20-%20Repo%20Creation.png)
+
+From the repository's settings tab, go to Secrets and variables -> Actions,
+shown highlighted below:
+
+![Navigating to the Secrets Page](/assets/images/discordbots/github_setup/2%20-%20Actions%20Secrets.png)
+
+We are going to create three repository secrets that will be used by the
+workflows to interact with Terraform and our GCP project. Click
+`New Repository secret` and add the following:
 
 1. GCP_BILLING_ACCOUNT_ID
 1. GCP_ORGANIZATION_ID
@@ -77,11 +83,18 @@ gcloud organizations list --format=json \
 
 The service account was created in the previous step and stored in
 `~/.config/gcloud/<your domain>-tf-controller.json`. Copy the entire contents of
-this file when creating the `GCP_SA_KEY` secret.
+this file when creating the `GCP_SA_KEY` secret. Your GitHub secrets page should
+look like:
 
-The goal here is to leverage branch naming conventions in order to handle
-Terraform operations. So the first thing we need is a workflow to create a new
-project.
+![Project Secrets](/assets/images/discordbots/github_setup/3%20-%20Adding%20Secrets.png)
+
+The goal now is to leverage branch naming conventions in order to handle
+Terraform operations. Our default branch is `main`, which will contain workflows
+and templates for a basic Terraform configuration. Each of our projects will be
+handled by a branch with a prefix like `_deploy`. So for a project like
+`discord-bots`, we will have a branch `discord-bots_deploy`. This branch will be
+used to apply Terraform configs specifically for our `discord-bots` project. So
+the first thing we need is a workflow to create a new project.
 
 ## GitHub Workflows
 
@@ -120,6 +133,9 @@ env:
   GOOGLE_CREDENTIALS: ${{ secrets.GCP_SA_KEY }}
   TF_WORKING_DIR: terraform
 
+permissions:
+  contents: write
+
 jobs:
   new_project:
     runs-on: ubuntu-latest
@@ -132,6 +148,8 @@ jobs:
         with:
           terraform_wrapper: false
       - name: Create GitHub branch
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           git config --global user.name "Terraform Admin"
           git config --global user.email "you@example.com"
@@ -272,3 +290,33 @@ You should end up with something very similar to
 https://github.com/thompsonja/terraform-controller.
 
 ## Creating your first project
+
+From your Terraform controller repository, click on `Actions` and select
+`New Project` from the left-hand panel, as shown below:
+
+![New Project Workflow](/assets/images/discordbots/github_setup/4%20-%20Running%20the%20New%20Project%20Workflow.png)
+
+Click the `Run Workflow` button, which will bring up a menu with various
+arguments. Add your domain name (without the top level domain like .com) and set
+the project name. This project name will be used as a prefix for the GCP
+project. The GCP region defaults to us-east1-a, leave it as is or override it if
+you prefer your bot to be hosted somewhere else.
+
+![Setting Workflow Arguments](/assets/images/discordbots/github_setup/5%20-%20Setting%20Workflow%20Arguments.png)
+
+Clicking on `Run workflow` will cause the workflow to begin. Clicking on it will
+reveal a status page, as shown below in a successful run:
+
+![Checking Workflow Status](/assets/images/discordbots/github_setup/6%20-%20Checking%20Status.png)
+
+You can expand the dropdowns to see logs for each step of the workflow. For
+instance, expanding `terraform plan` will show you Terraform logs for the `plan`
+stage, which generally includes which resources will be created, modified, or
+destroyed:
+
+![Viewing Terraform Plan Logs](/assets/images/discordbots/github_setup/7%20-%20Expanding%20Plan%20Logs.png)
+
+Similarly, you can look at the logs for `terraform apply`, which will show what
+resources actually were created, modified, or destroyed:
+
+![Viewing Terraform Apply Logs](/assets/images/discordbots/github_setup/8%20-%20Expanding%20Apply%20Logs.png)

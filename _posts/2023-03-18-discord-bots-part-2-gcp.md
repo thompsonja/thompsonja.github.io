@@ -18,34 +18,66 @@ series: discordbots
 
 {% include series.html %}
 
-Creating an organization in GCP is a great way to organize your projects. For
-just a single discord bot application, this is likely overkill, but this will
-greatly simplify your ability to iterate on other projects. I am using Cloud
-Identity, primarily because it's the cheapest option and I am not currently
-running a Google Workspace.
+Creating an organization in GCP is a great way to organize your projects. It
+will also enable us to create a separate project that will house both our
+Terraform state (described later in this series) and a service account that has
+permissions to apply Terraform configuration across all of our projects. For
+just a single discord bot application this is overkill, but becomes very useful
+to expedite bootstrapping other projects you may have. Creating an organization
+and additional project is basically free (especially if you already have a
+domain name registered), so there's not much downside. I am using Cloud Identity
+for this because it's the cheapest option and I am not currently running a
+Google Workspace.
 
-Cloud Identity needs to be tied to a domain, which I have created for this blog,
-thompsonja.com. I happen to also use [Google Domains](https://domains.google.com/)
-for domain management, although any registrar will do.
+Cloud Identity needs to be tied to a domain, which I have happen to have created
+for this blog, `thompsonja.com`. I happen to also use [Google Domains](https://domains.google.com/)
+for domain management, although any registrar of your choice will do.
 
-I'm using the following resources from GCP:
+Refer to the following resources from GCP to set up Cloud Identity.
 
 - https://cloud.google.com/resource-manager/docs/creating-managing-organization
 - https://cloud.google.com/identity/docs/set-up-cloud-identity-admin
 
-Once you finish creating the Identity, navigating to the cloud console should
-result in an organization being created for you automatically when you navigate
-to the [GCP Console](https://console.cloud.google.com/).
+These images may not be up-to-date, but highlight the general process I took to
+create a Cloud Identity:
 
-You'll want to set up billing by navigating to
+Setting up a business. The name isn't super important, but I did set the number
+of employees to "Just You" as shown below.
+![Getting Started](/assets/images/discordbots/gcp_setup/1%20-%20Getting%20Started.png)
+
+The next steps are pretty straightforward, creating an admin account,
+associating the Cloud Identity with a domain name, and adding two factor auth.
+![Contact Info](/assets/images/discordbots/gcp_setup/2%20-%20Contact%20Info.png)
+
+![Setting Domain](/assets/images/discordbots/gcp_setup/3%20-%20Setting%20Domain.png)
+
+![Creating An Account](/assets/images/discordbots/gcp_setup/4%20-%20Creating%20An%20Account.png)
+
+![Adding a Phone Number](/assets/images/discordbots/gcp_setup/5%20-%20Phone%20Number.png)
+
+Next, you'll need to prove to GCP that you own the domain, which is done by
+adding a TXT record to the DNS settings of your domain. Clicking the Protect
+button as shown will bring up a page with the TXT entry that should be added,
+which I added to my domain registered with Google. It'll take about an hour to
+fully verify this DNS update.
+![Proving Domain Ownership](/assets/images/discordbots/gcp_setup/6%20-%20Proving%20Domain%20Ownership.png)
+
+![Updating DNS Settings](/assets/images/discordbots/gcp_setup/7%20-%20Adding%20TXT%20Record.png)
+
+![Updating DNS Settings](/assets/images/discordbots/gcp_setup/8%20-%20Updating%20DNS%20Settings.png)
+
+Once you finish creating a Cloud Identity, navigate to the [cloud console](https://console.cloud.google.com)
+and a GCP organization should be created for you automatically.
+
+You'll also want to set up billing by navigating to
 https://console.cloud.google.com/billing. Usually GCP will run a new user trial
-credit option.
+credit option, so take advantage of that if available.
 
 Now we can start setting up our new organization by adding a new GCP project.
 This project will be in charge of running Terraform commands.
 
 First, make sure you have `gcloud` installed on your machine. Follow the
-instructions here if you haven't already:
+instructions here if you don't have it installed already:
 https://cloud.google.com/sdk/docs/install
 
 Once you have it installed, run the following command in a terminal:
@@ -142,13 +174,13 @@ revert Terraform state back if we need to:
 ```bash
 gsutil mb -p ${TF_ADMIN} gs://${TF_ADMIN}
 gsutil versioning set on gs://${TF_ADMIN}
-~~~ bash
+```
 
 Finally, we enable some GCP services that we may need in later projects. This
 is because we cannot use the service account to enable a service in another
 project if that service is not also enabled in the admin project:
 
-~~~ bash
+```bash
 gcloud services enable appengine.googleapis.com
 gcloud services enable artifactregistry.googleapis.com
 gcloud services enable cloudbuild.googleapis.com

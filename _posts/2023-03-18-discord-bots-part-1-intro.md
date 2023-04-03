@@ -16,32 +16,41 @@ series: discordbots
 
 A few years back Discord [announced support for slash commands](https://discord.com/blog/slash-commands-are-here).
 For a while I had been running private discord bots for my friends' servers
-using the standard pattern of listening to all messages and reacting on any that
-start with an exclamation point. For example, I had a bot that we used to easily
-rename each other that would listen to any messages that begin with `!rename`.
+using the standard pattern of listening to all messages and reacting to any that
+start with an exclamation point. For example, I had a bot that was used to
+easily rename each other that would listen to any messages that begin with
+`!rename`.
 
-This works really well for a lot of bots but had a clear downside. Bots had to
-persistently be running, which meant either running them on a persistent VM on
-the cloud, which costs money, or running them on a spare server at home, like a
-raspberry pi. Although the latter works well and is cheap, I generally want to
-avoid running services on my local network if I don't have to. Also, my network
-has a tendency to falter from time to time, leading to an occasional downtime.
+This works really well for many classes of Discord bots but had clear downsides.
+For one, bots had to run persistently, which meant either running them on a
+persistent VM on a cloud provider which costs money, or running them on a spare
+server at home, like a Raspberry Pi. Although the latter works well and is
+cheap, I generally want to avoid running services on my local network that are
+reachable from the internet if I don't have to. Also, my network isn't always
+reliable, due to either internet outages or just issues with my router or cable
+modem, so downtime using this approach was pretty common.
 
 The solution is to leverage serverless cloud computing infrastructure. I'm the
-type of developer who likes to spend massive amount of times working on the
-infrastructure pipeline for a personal project, even if it's something pretty
-lightweight like a Discord bot. I wanted a pipeline that would be automatically
-integrated with GitHub, such that updates to the bot are tested and deployed
-automatically. Further, I wanted setup of multiple bots to be a breeze. Finally,
-I wanted to leverage GCP features like logging and alerting to know when the bot
-was having issues. This series of blog posts will cover all of these, leveraging
-several key pieces of technology in order to create a fully-fledged
-infrastructure pipeline for Discord bot development. I will be breaking this
-down into several posts, each covering different aspects of the pipeline. Feel
-free to jump around as your interest dictates.
+type of developer who likes to spend a lot of time working on infrastructure
+pipelines for a personal project before even writing any actual code for the
+project itself, even if it's something pretty lightweight like a Discord bot.
+My requirements for the pipeline are:
 
-As a summary, I am using the following technologies and libraries, although you
-can mix and match depending on your own preferences.
+- Integration with GitHub
+  - Infrastructure code is stored as a GitHub repo
+    - Changes to the infrastructure must be done as tested GitHub Pull Requests
+  - Bot code is stored as a GitHub repo
+    - Updates to the bot's code are tested and then deployed automatically
+    - The repo can store multiple bot projects
+  - A single source for logging across all bots
+  - Email alerting when bots are having issues
+
+This series of blog posts will cover creation of a pipeline to satisfy all of
+these requirements, leveraging several key pieces of technology in order to
+create a fully-fledged infrastructure pipeline for Discord bot development. I
+will be breaking this down into several posts, each covering different aspects
+of the pipeline. I will use the following technologies and libraries, although
+you can mix and match depending on your own preferences.
 
 - Bot development - Golang using the [discordgo](https://github.com/bwmarrin/discordgo)
   library.
