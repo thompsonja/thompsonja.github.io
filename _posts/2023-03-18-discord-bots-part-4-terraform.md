@@ -12,16 +12,13 @@ tags:
   - terraform
 permalink: discordbots/part4-terraform
 series: discordbots
-published: false
 ---
 
 {% include series.html %}
 
-Previously we set up a GCP organization and created an admin project to be used
-to carry out terraform operations.
-
-Create a folder named terraform in your git project folder and add the following
-files:
+Previously we set up a GitHub project for hosting Terraform configs, so let's
+add some! Create a folder named terraform in your git project folder and add the
+following files:
 
 1. backend.tf
 1. outputs.tf
@@ -82,13 +79,11 @@ below:
 ```
 terraform {
   backend "gcs" {
-    bucket = "${DOMAIN}-tf-controller"
+    bucket = "{{DOMAIN}}-tf-controller"
     prefix = "{{PROJECT_NAME}}/terraform/state"
   }
 }
 ```
-
-Where `${DOMAIN}` is the domain you used earlier in this series.
 
 ## provider.tf
 
