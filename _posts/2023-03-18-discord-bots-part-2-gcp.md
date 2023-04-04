@@ -42,29 +42,19 @@ These images may not be up-to-date, but highlight the general process I took to
 create a Cloud Identity:
 
 Setting up a business. The name isn't super important, but I did set the number
-of employees to "Just You" as shown below.
-![Getting Started](/assets/images/discordbots/gcp_setup/1%20-%20Getting%20Started.png)
+of employees to "Just You." The next steps are pretty straightforward, creating
+an admin account, associating the Cloud Identity with a domain name, and adding
+two factor auth:
 
-The next steps are pretty straightforward, creating an admin account,
-associating the Cloud Identity with a domain name, and adding two factor auth.
-![Contact Info](/assets/images/discordbots/gcp_setup/2%20-%20Contact%20Info.png)
-
-![Setting Domain](/assets/images/discordbots/gcp_setup/3%20-%20Setting%20Domain.png)
-
-![Creating An Account](/assets/images/discordbots/gcp_setup/4%20-%20Creating%20An%20Account.png)
-
-![Adding a Phone Number](/assets/images/discordbots/gcp_setup/5%20-%20Phone%20Number.png)
+{% include image-gallery.html folder="/assets/images/discordbots/gcp_setup/cloud_identity" size=200 %}
 
 Next, you'll need to prove to GCP that you own the domain, which is done by
 adding a TXT record to the DNS settings of your domain. Clicking the Protect
 button as shown will bring up a page with the TXT entry that should be added,
 which I added to my domain registered with Google. It'll take about an hour to
 fully verify this DNS update.
-![Proving Domain Ownership](/assets/images/discordbots/gcp_setup/6%20-%20Proving%20Domain%20Ownership.png)
 
-![Updating DNS Settings](/assets/images/discordbots/gcp_setup/7%20-%20Adding%20TXT%20Record.png)
-
-![Updating DNS Settings](/assets/images/discordbots/gcp_setup/8%20-%20Updating%20DNS%20Settings.png)
+{% include image-gallery.html folder="/assets/images/discordbots/gcp_setup/dns" size=200 %}
 
 Once you finish creating a Cloud Identity, navigate to the [cloud console](https://console.cloud.google.com)
 and a GCP organization should be created for you automatically.

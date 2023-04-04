@@ -48,14 +48,8 @@ file in addition to updating your cloud infrastructure.
 
 First, create a new GitHub project by navigating to https://github.com/new.
 Create a project like `terraform-controller` and clone it locally to your
-machine. Note: I created these images with a different repository name.
-
-![Create a Repository](/assets/images/discordbots/github_setup/1%20-%20Repo%20Creation.png)
-
-From the repository's settings tab, go to Secrets and variables -> Actions,
-shown highlighted below:
-
-![Navigating to the Secrets Page](/assets/images/discordbots/github_setup/2%20-%20Actions%20Secrets.png)
+machine. From the repository's settings tab, go to Secrets and variables ->
+Actions.
 
 We are going to create three repository secrets that will be used by the
 workflows to interact with Terraform and our GCP project. Click
@@ -83,10 +77,11 @@ gcloud organizations list --format=json \
 
 The service account was created in the previous step and stored in
 `~/.config/gcloud/<your domain>-tf-controller.json`. Copy the entire contents of
-this file when creating the `GCP_SA_KEY` secret. Your GitHub secrets page should
-look like:
+this file when creating the `GCP_SA_KEY` secret. These steps are shown in the
+gallery below. Note: I created these images with a different repository name but
+the gist is the same.
 
-![Project Secrets](/assets/images/discordbots/github_setup/3%20-%20Adding%20Secrets.png)
+{% include image-gallery.html folder="/assets/images/discordbots/github_setup/repo" size=200 %}
 
 The goal now is to leverage branch naming conventions in order to handle
 Terraform operations. Our default branch is `main`, which will contain workflows
@@ -292,31 +287,21 @@ https://github.com/thompsonja/terraform-controller.
 ## Creating your first project
 
 From your Terraform controller repository, click on `Actions` and select
-`New Project` from the left-hand panel, as shown below:
+`New Project` from the left-hand panel. Click the `Run Workflow` button, which
+will bring up a menu with various arguments. Add your domain name (without the
+top level domain like .com) and set the project name. This project name will be
+used as a prefix for the GCP project. The GCP region defaults to us-east1-a,
+leave it as is or override it if you prefer your bot to be hosted somewhere
+else.
 
-![New Project Workflow](/assets/images/discordbots/github_setup/4%20-%20Running%20the%20New%20Project%20Workflow.png)
+{% include image-gallery.html folder="/assets/images/discordbots/github_setup/workflow" size=200 %}
 
-Click the `Run Workflow` button, which will bring up a menu with various
-arguments. Add your domain name (without the top level domain like .com) and set
-the project name. This project name will be used as a prefix for the GCP
-project. The GCP region defaults to us-east1-a, leave it as is or override it if
-you prefer your bot to be hosted somewhere else.
+Clicking on `Run workflow` will cause the workflow to begin. Once it starts, an
+entry will appear in the workflow runs page. Clicking on it will reveal a status
+page. You can expand the dropdowns to see logs for each step of the workflow.
+For instance, expanding `terraform plan` will show you Terraform logs for the
+`plan` stage, which generally includes which resources will be created,
+modified, or destroyed, and similarly for `terraform apply`, which shows which
+resources actually were created, modified, or destroyed.
 
-![Setting Workflow Arguments](/assets/images/discordbots/github_setup/5%20-%20Setting%20Workflow%20Arguments.png)
-
-Clicking on `Run workflow` will cause the workflow to begin. Clicking on it will
-reveal a status page, as shown below in a successful run:
-
-![Checking Workflow Status](/assets/images/discordbots/github_setup/6%20-%20Checking%20Status.png)
-
-You can expand the dropdowns to see logs for each step of the workflow. For
-instance, expanding `terraform plan` will show you Terraform logs for the `plan`
-stage, which generally includes which resources will be created, modified, or
-destroyed:
-
-![Viewing Terraform Plan Logs](/assets/images/discordbots/github_setup/7%20-%20Expanding%20Plan%20Logs.png)
-
-Similarly, you can look at the logs for `terraform apply`, which will show what
-resources actually were created, modified, or destroyed:
-
-![Viewing Terraform Apply Logs](/assets/images/discordbots/github_setup/8%20-%20Expanding%20Apply%20Logs.png)
+{% include image-gallery.html folder="/assets/images/discordbots/github_setup/logs" size=200 %}
