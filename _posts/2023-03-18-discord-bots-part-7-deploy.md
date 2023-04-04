@@ -1,7 +1,7 @@
 ---
 title: "Discord Bot Pipeline - Deploying The Bot"
 excerpt: "Putting it all together to deploy our bot live."
-date: 2023-03-18 12:10:35 +0000
+date: 2023-03-18 12:10:35 -0400
 categories:
   - discord
 tags:
@@ -9,7 +9,7 @@ tags:
   - golang
   - gcp
   - terraform
-permalink: discordbots/part7-bot-deploy
+permalink: discordbots/part8-bot-deploy
 series: discordbots
 published: false
 ---

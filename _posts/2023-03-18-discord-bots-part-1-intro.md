@@ -1,7 +1,7 @@
 ---
 title: "Discord Bot Pipeline - Intro"
 excerpt: "Introduction to a new series on Discord Bot pipelines on GCP"
-date: 2023-03-18 12:04:35 +0000
+date: 2023-03-18 12:04:35 -0400
 categories:
   - discord
 tags:

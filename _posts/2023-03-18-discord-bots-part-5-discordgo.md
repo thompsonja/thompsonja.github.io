@@ -2,13 +2,13 @@
 title: "Discord Bot Pipeline - Using discordgo"
 excerpt: "Let's discuss how we can leverage the discordgo library to easily
 create Discord bots using Golang."
-date: 2023-03-18 12:08:35 +0000
+date: 2023-03-18 12:08:35 -0400
 categories:
   - discord
 tags:
   - discord
   - golang
-permalink: discordbots/part5-discordgo
+permalink: discordbots/part6-discordgo
 series: discordbots
 published: false
 ---

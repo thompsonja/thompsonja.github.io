@@ -1,7 +1,7 @@
 ---
 title: "Discord Bot Pipeline - Creating The Bot"
 excerpt: "Let's actually write a bot!"
-date: 2023-03-18 12:09:35 +0000
+date: 2023-03-18 12:09:35 -0400
 categories:
   - discord
 tags:
@@ -9,7 +9,7 @@ tags:
   - golang
   - gcp
   - terraform
-permalink: discordbots/part6-bot-creation
+permalink: discordbots/part7-bot-creation
 series: discordbots
 published: false
 ---

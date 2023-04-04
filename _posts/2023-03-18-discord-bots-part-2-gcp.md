@@ -2,7 +2,7 @@
 title: "Discord Bot Pipeline - GCP Setup"
 excerpt: "We go over the steps involved for setting up a GCP organization that
 will host GCP projects for Terraform management and the Discord bots themselves."
-date: 2023-03-18 12:05:35 +0000
+date: 2023-03-18 12:05:35 -0400
 categories:
   - discord
 tags:

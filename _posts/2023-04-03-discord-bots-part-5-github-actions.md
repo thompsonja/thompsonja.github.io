@@ -2,7 +2,7 @@
 title: "Discord Bot Pipeline - GitHub Actions Setup"
 excerpt: "GitHub Actions are a powerful way to handle CI/CD for Terraform and
 our Discord bots. Read more below the fold."
-date: 2023-03-18 12:07:35 +0000
+date: 2023-04-03 21:57:35 -0400
 categories:
   - discord
 tags:
@@ -10,86 +10,15 @@ tags:
   - cicd
   - terraform
   - github
-permalink: discordbots/part3-github-actions
+permalink: discordbots/part5-github-actions
 series: discordbots
 ---
 
 {% include series.html %}
 
-Previously in this series, we set up our GCP organization and created an admin
-project that will carry out Terraform actions. Now let's set up a GitHub project
-to integrate with this GCP project. The goal here is to use GitHub workflows in
-order to manage your projects with Terraform. The details of Terraform are
-beyond the scope of this series, but the next section will provide a brief
-overview.
-
-## Terraform Basics
-
-If you've ever worked with a cloud computing provider, you've likely encountered
-the stage of your journey where you've forgotten what settings you've applied,
-what permissions and service accounts you've created, and have made breaking
-changes that you don't know how to revert. Terraform is an Infrastructure-as-
-Code tool that allows you to define your cloud infrastructure as configuration
-files.
-
-There are two main operations you should be familiar with:
-
-- `terraform plan` - This displays the proposed changes based on a current
-  configuration.
-- `terraform apply` - This applies the proposed changes, resulting in new or
-  updated infrastructure.
-
-Terraform knows about the current state of the system by maintaining a state
-file. This state file will be located in the GCS bucket we created in the
-previous step. When Terraform applies configuration, it also updates the state
-file in addition to updating your cloud infrastructure.
-
-## GitHub Setup
-
-First, create a new GitHub project by navigating to https://github.com/new.
-Create a project like `terraform-controller` and clone it locally to your
-machine. From the repository's settings tab, go to Secrets and variables ->
-Actions.
-
-We are going to create three repository secrets that will be used by the
-workflows to interact with Terraform and our GCP project. Click
-`New Repository secret` and add the following:
-
-1. GCP_BILLING_ACCOUNT_ID
-1. GCP_ORGANIZATION_ID
-1. GCP_SA_KEY
-
-As in the previous step, your GCP billing account ID can be found by running:
-
-```bash
-gcloud beta billing accounts list --format=json \
-  | jq -r '.[0].name' \
-  | cut -d'/' -f2
-```
-
-And your organization ID can be found by running:
-
-```bash
-gcloud organizations list --format=json \
-  | jq -r '.[0].name' \
-  | cut -d'/' -f2
-```
-
-The service account was created in the previous step and stored in
-`~/.config/gcloud/<your domain>-tf-controller.json`. Copy the entire contents of
-this file when creating the `GCP_SA_KEY` secret. These steps are shown in the
-gallery below. Note: I created these images with a different repository name but
-the gist is the same.
-
-{% include image-gallery.html folder="/assets/images/discordbots/github_setup/repo" size=200 %}
-
-The goal now is to leverage branch naming conventions in order to handle
-Terraform operations. Our default branch is `main`, which will contain workflows
-and templates for a basic Terraform configuration. Each of our projects will be
-handled by a branch with a prefix like `_deploy`. So for a project like
-`discord-bots`, we will have a branch `discord-bots_deploy`. This branch will be
-used to apply Terraform configs specifically for our `discord-bots` project. So
-the first thing we need is a workflow to create a new project.
+Previously in this series, we created a GitHub project and populated it with
+Terraform configurations. In this post, we'll go over how to leverage GitHub
+Workflows as our CI/CD infrastructure for deploying Terraform updates.
 
 ## GitHub Workflows
 
@@ -294,7 +223,7 @@ used as a prefix for the GCP project. The GCP region defaults to us-east1-a,
 leave it as is or override it if you prefer your bot to be hosted somewhere
 else.
 
-{% include image-gallery.html folder="/assets/images/discordbots/github_setup/workflow" size=200 %}
+{% include image-gallery.html folder="/assets/images/discordbots/github_actions/workflow" size=200 %}
 
 Clicking on `Run workflow` will cause the workflow to begin. Once it starts, an
 entry will appear in the workflow runs page. Clicking on it will reveal a status
@@ -304,4 +233,4 @@ For instance, expanding `terraform plan` will show you Terraform logs for the
 modified, or destroyed, and similarly for `terraform apply`, which shows which
 resources actually were created, modified, or destroyed.
 
-{% include image-gallery.html folder="/assets/images/discordbots/github_setup/logs" size=200 %}
+{% include image-gallery.html folder="/assets/images/discordbots/github_actions/logs" size=200 %}
