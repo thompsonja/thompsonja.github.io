@@ -114,8 +114,11 @@ on:
       - "terraform/**"
 
 env:
-  GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_SA_KEY }}
+  GOOGLE_CREDENTIALS: ${{ secrets.GCP_SA_KEY }}
   TF_WORKING_DIR: terraform
+
+permissions:
+  pull-requests: write
 
 jobs:
   terraform_plan:
@@ -140,7 +143,7 @@ jobs:
       - name: terraform plan
         id: plan
         run: terraform plan -no-color -lock-timeout=5m
-      - uses: actions/github-script@0.9.0
+      - uses: actions/github-script@v6
         if: github.event_name == 'pull_request'
         env:
           PLAN: "terraform\n${{ steps.plan.outputs.stdout }}"
@@ -159,9 +162,9 @@ jobs:
             ${process.env.PLAN}
             \`\`\`
 
-            </details>
+            </details>`
 
-            github.issues.createComment({
+            github.rest.issues.createComment({
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
@@ -186,7 +189,7 @@ on:
   workflow_dispatch:
 
 env:
-  GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_SA_KEY }}
+  GOOGLE_CREDENTIALS: ${{ secrets.GCP_SA_KEY }}
   TF_WORKING_DIR: terraform
 
 jobs:
@@ -234,3 +237,6 @@ modified, or destroyed, and similarly for `terraform apply`, which shows which
 resources actually were created, modified, or destroyed.
 
 {% include image-gallery.html folder="/assets/images/discordbots/github_actions/logs" size=200 %}
+
+In the next section, we will go over how to view this newly created project and
+how to use our new pipeline to make changes to our project with Terraform.
