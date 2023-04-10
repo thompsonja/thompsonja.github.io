@@ -1,5 +1,5 @@
 ---
-title: "Discord Bot Pipeline - Terraform Setup"
+title: "Discord Bot Pipeline - Discord Specific Terraform Setup"
 excerpt: "This post covers setting up Terraform configs to handle Discord bot
 creation."
 date: 2023-04-09 20:23:00 -0400
