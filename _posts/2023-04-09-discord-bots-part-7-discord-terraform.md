@@ -175,8 +175,8 @@ variable "gcp" {
     additional_roles       = list(string)
     additional_secrets     = list(string)
     artifact_repository_id = string
-    owner                  = string
     notification_channels  = list(string)
+    owner                  = string
     project_id             = string
     project_number         = string
     zone                   = string
@@ -281,7 +281,7 @@ resource "google_secret_manager_secret" "bot-secrets" {
 
 // Make sure you and the bot can access these secrets.
 resource "google_secret_manager_secret_iam_binding" "bot-secrets-access" {
-  for_each  = toset(concat(google_secret_manager_secret.bot-secrets, google_secret_manager_secret.bot-key))
+  for_each  = merge({ "bot-key" = google_secret_manager_secret.bot-key }, google_secret_manager_secret.bot-secrets)
   project   = var.gcp.project_id
   secret_id = each.value.secret_id
   role      = "roles/secretmanager.secretAccessor"
@@ -292,7 +292,7 @@ resource "google_secret_manager_secret_iam_binding" "bot-secrets-access" {
 }
 
 resource "google_secret_manager_secret_iam_binding" "bot-secrets-viewer" {
-  for_each  = toset(concat(google_secret_manager_secret.bot-secrets, google_secret_manager_secret.bot-key))
+  for_each  = merge({ "bot-key" = google_secret_manager_secret.bot-key }, google_secret_manager_secret.bot-secrets)
   project   = var.gcp.project_id
   secret_id = each.value.secret_id
   role      = "roles/secretmanager.viewer"
@@ -304,7 +304,7 @@ resource "google_secret_manager_secret_iam_binding" "bot-secrets-viewer" {
 
 // This lets you be able to update the secret when you obtain it from Discord.
 resource "google_secret_manager_secret_iam_binding" "bot-secrets-writer" {
-  for_each  = toset(concat(google_secret_manager_secret.bot-secrets, google_secret_manager_secret.bot-key))
+  for_each  = merge({ "bot-key" = google_secret_manager_secret.bot-key }, google_secret_manager_secret.bot-secrets)
   project   = var.gcp.project_id
   secret_id = each.value.secret_id
   role      = "roles/secretmanager.secretVersionManager"
@@ -322,8 +322,8 @@ resource "google_cloud_run_service" "service" {
   template {
     spec {
       containers {
-        image   = "${var.gcp.zone}-docker.pkg.dev/${var.gcp.project_id}/${var.gcp.artifact_repository_id}/${var.bot_name}:latest"
-        command = ["/app/server"]
+        image   = "us-docker.pkg.dev/cloudrun/container/hello:latest"
+        command = ["/server"]
         args    = ["--project_id=${var.gcp.project_id}"]
       }
       service_account_name = google_service_account.bot-service-account.email
@@ -382,7 +382,6 @@ resource "google_cloudbuild_trigger" "service-trigger" {
 
   substitutions = {
     _APP         = var.bot_name
-    _SKIP_DEPLOY = "false"
     _ZONE        = var.gcp.zone
   }
 
