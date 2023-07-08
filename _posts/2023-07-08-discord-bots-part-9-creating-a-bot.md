@@ -418,7 +418,7 @@ import (
 	"encoding/hex"
 	"flag"
 	"log"
-	"os/exec"
+	"os/exec"cha
 	"strings"
 
 	"github.com/thompsonja/discord_bots_lib/pkg/discord/webhooks"
@@ -442,7 +442,7 @@ var (
 )
 ```
 
-Finally, let's build our `main` function
+Finally, let's build our `main` function:
 
 ```go
 func main() {
@@ -454,6 +454,7 @@ func main() {
 
 	flag.Parse()
 
+	// Get project ID from your gcloud config if not passed in as a flag.
 	if *gcpProjectID == "" {
 		cmd := exec.Command("gcloud", "config", "get-value", "project")
 		stdoutStderr, err := cmd.CombinedOutput()
@@ -463,13 +464,19 @@ func main() {
 		*gcpProjectID = strings.TrimSpace(string(stdoutStderr))
 	}
 
+	// Instantiate a bot.
 	b := bot.New(*gcpProjectID, *openaiApiSecret)
 
+	// Map Discord Application Commands to bot functions.
 	fns := map[string]webhooks.WebhookFunc{
+		"debug":    b.Debug,
 		"version":  b.Version,
 		"generate": b.Generate,
 	}
 
+	// Create a new webhook client.
+	// SecretKey is the name of the GCP Secret that was automatically created by
+	// the terraform configs and manually populated.
 	c, err := webhooks.NewClient(webhooks.ClientConfig{
 		AppID:     appID,
 		Commands:  bot.Commands,
@@ -483,8 +490,122 @@ func main() {
 		log.Fatalf("discord.NewClient: %v", err)
 	}
 
+	// Run the bot, destroying and updating commands if desired.
 	if err := c.Run(*destroyCommands, *updateCommands); err != nil {
 		log.Fatalf("c.Run: %v", err)
 	}
 }
 ```
+
+A few command line flags have been added for convenience. When you create a
+Discord bot, especially one that responds to webhooks, you need to communicate
+with the [Discord APIs](https://discord.com/developers/docs/interactions/application-commands#registering-a-command)
+in order for them to be visible. This is because a persistent bot can advertise
+what functions it supports, but one triggered via webhook is only started when
+a command is sent. Therefore we need to tell Discord ahead of time what
+commands it supports.
+
+If you're currently logged in to the correct GCP account (run `gcloud auth list`
+and `gcloud config list` to verify your account and GCP project), then you can
+simply build and run the go binary as follows:
+
+```bash
+cd dalle
+go mod tidy
+go build .
+./dalle --update
+```
+
+You'll see some output like:
+
+```
+2023/07/08 16:29:07 Adding commands...
+2023/07/08 16:29:08 Creating command  (name debug) for app ID 1096915795826712636
+2023/07/08 16:29:08 Creating command  (name version) for app ID 1096915795826712636
+2023/07/08 16:29:08 Creating command  (name generate) for app ID 1096915795826712636
+2023/07/08 16:29:08 Done
+2023/07/08 16:29:08 Starting server at port 8080
+```
+
+Note that this will also run the server, which you can later use for debugging
+purposes. Go ahead and stop the server (ctrl-c). You can also delete the
+generated `dalle` binary (aka `./dalle/dalle`).
+
+Let's now go ahead and commit your changes to your `discordbots` repository. By
+doing so, it should correctly trigger a GCP Cloud Build build. Let's see it in
+action!
+
+```bash
+# From the project root
+git add .
+git commit -m "Initial dalle bot"
+git checkout -b "dalle-bot"
+git push
+```
+
+By now you should get the idea. Create a Pull Request in GitHub and verify that
+the GitHub workflow passed successfully. Note that since this is a new workflow,
+it won't block you from merging your PR. Manually verify them instead and then
+merge, setting up your branch protection rules later.
+
+Merging the PR will trigger a new Cloud Build on GCP. Let's take a look by
+navigating to [Cloud Build](https://console.cloud.google.com/cloud-build/builds).
+
+You should see something like:
+
+![Cloud Build Results](/assets/images/discordbots/bot/7%20-%20Cloud%20Build.png)
+
+It should show a successful build! Note the commit sha, in this case `dacb4de`.
+
+Now let's see if Cloud Run also successfully updated to use the new build image.
+Navigate to [Cloud Run](https://console.cloud.google.com/run) and select the
+`dalle` service and navigate to the `Revisions` tab. This section shows Cloud
+Run history. Every time you update the `dalle` code in your repository and merge
+it, you should eventually see a new entry here, as shown below:
+
+![Cloud Run](/assets/images/discordbots/bot/8%20-%20Cloud%20Run.png)
+
+Note that you can also see a URL (at the top of the above picture) when you are
+viewing a Cloud Run service. This is the exposed URL that you can now provide to
+Discord in order to connect it as a webhook.
+
+In the `General Information` tab in the Discord developer portal for your bot,
+scroll down to the input box `Interactions Endpoint URL` and paste the URL from
+Cloud Run into it:
+
+![Webhook URL](/assets/images/discordbots/bot/9%20-%20Webhook%20URL.png)
+
+Click save, and you should get a confirmation that it worked:
+
+![Webhook Confirmed](/assets/images/discordbots/bot/10%20-%20Webhook%20Confirmed.png)
+
+While you're here, go ahead and create the Discord invite link.
+Navigate to the `URL Generator` page, select `bot` scope, and give the following
+permissions:
+
+- Send Messages
+- Send Messages in Threads
+- Attach Files
+- Use Slash Commands
+
+As shown below:
+
+![URL Generator](/assets/images/discordbots/bot/11%20-%20URL%20Generator.png)
+
+![Bot Scope](/assets/images/discordbots/bot/12%20-%20Bot%20Scope.png)
+
+![Bot Permissions](/assets/images/discordbots/bot/13%20-%20Bot%20Permissions.png)
+
+Copy the link and paste it into your browser. Select the server you want to add
+your bot too (I usually have a test server for these purposes). Once added,
+let's try it out. Type a slash to bring up the slash commands menu, where you
+should see your bot and its available commands:
+
+![Bot Commands](/assets/images/discordbots/bot/14%20-%20Slash%20Command.png)
+
+Give the `/version` command a try:
+
+![Version Command](/assets/images/discordbots/bot/15%20-%20Version%20Results.png)
+
+Notice that the version matches the git commit sha from earlier! This is useful
+for debugging if you want to verify that the bot is the version you think it is.
