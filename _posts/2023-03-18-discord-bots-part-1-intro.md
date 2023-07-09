@@ -10,6 +10,8 @@ tags:
   - cicd
 permalink: /discordbots/
 series: discordbots
+header:
+  image: /assets/images/discordbots/headers/infra.jpeg
 ---
 
 {% include series.html %}
