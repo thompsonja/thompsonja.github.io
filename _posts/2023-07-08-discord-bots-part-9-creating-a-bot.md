@@ -418,10 +418,12 @@ import (
 	"encoding/hex"
 	"flag"
 	"log"
-	"os/exec"cha
+	"os/exec"
 	"strings"
 
+	"cloud.google.com/go/logging"
 	"github.com/thompsonja/discord_bots_lib/pkg/discord/webhooks"
+	"github.com/thompsonja/discord_bots_lib/pkg/gcp/logger"
 	"github.com/<your_user>/discordbots/dalle/bot"
 )
 ```
@@ -474,6 +476,13 @@ func main() {
 		"generate": b.Generate,
 	}
 
+	// Create a GCP logging client
+	client, err := logging.NewClient(context.Background(), *gcpProjectID)
+	if err != nil {
+		log.Fatalf("Failed to create client: %v", err)
+	}
+	defer client.Close()
+
 	// Create a new webhook client.
 	// SecretKey is the name of the GCP Secret that was automatically created by
 	// the terraform configs and manually populated.
@@ -485,6 +494,7 @@ func main() {
 		Fns:       fns,
 		ProjectID: *gcpProjectID,
 		SecretKey: "dalle-key",
+		Logger:    logger.New(client, "dalle-logs"),
 	})
 	if err != nil {
 		log.Fatalf("discord.NewClient: %v", err)
@@ -496,6 +506,9 @@ func main() {
 	}
 }
 ```
+
+Note that we create a GCP cloud logger with log name `dalle-logs`. This matches
+the Terraform configurations for our log based metrics and alerts.
 
 A few command line flags have been added for convenience. When you create a
 Discord bot, especially one that responds to webhooks, you need to communicate
@@ -609,3 +622,10 @@ Give the `/version` command a try:
 
 Notice that the version matches the git commit sha from earlier! This is useful
 for debugging if you want to verify that the bot is the version you think it is.
+
+Finally let's verify the actual image generation command. Type `/generate` and
+enter a prompt, as shown below (edited for brevity):
+
+<video muted autoplay controls>
+    <source src="{{ site.my-media-path }}/assets/images/discordbots/bot/16 - Generate Image.mp4" type="video/mp4">
+</video>
