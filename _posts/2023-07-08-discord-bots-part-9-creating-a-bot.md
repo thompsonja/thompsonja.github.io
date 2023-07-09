@@ -7,8 +7,6 @@ categories:
 tags:
   - discord
   - golang
-  - gcp
-  - terraform
 permalink: discordbots/part9-bot-creation
 series: discordbots
 published: true
@@ -626,6 +624,6 @@ for debugging if you want to verify that the bot is the version you think it is.
 Finally let's verify the actual image generation command. Type `/generate` and
 enter a prompt, as shown below (edited for brevity):
 
-<video muted autoplay controls>
+<video muted autoplay loop>
     <source src="{{ site.my-media-path }}/assets/images/discordbots/bot/16 - Generate Image.mp4" type="video/mp4">
 </video>
