@@ -10,6 +10,8 @@ tags:
 permalink: discordbots/part9-bot-creation
 series: discordbots
 published: true
+header:
+  image: /assets/images/discordbots/headers/bot.png
 ---
 
 {% include series.html %}

@@ -12,6 +12,8 @@ tags:
   - terraform
 permalink: discordbots/part4-terraform
 series: discordbots
+header:
+  image: /assets/images/discordbots/headers/assemblyline.png
 ---
 
 {% include series.html %}

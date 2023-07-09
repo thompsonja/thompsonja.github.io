@@ -14,6 +14,8 @@ collections:
   - discordbot
 permalink: discordbots/part2-gcp
 series: discordbots
+header:
+  image: /assets/images/discordbots/headers/cloud.png
 ---
 
 {% include series.html %}
